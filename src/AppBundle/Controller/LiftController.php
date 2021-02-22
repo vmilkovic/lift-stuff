@@ -4,8 +4,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\RepLog;
 use AppBundle\Form\Type\RepLogType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class LiftController extends BaseController
 {
@@ -26,6 +27,12 @@ class LiftController extends BaseController
 
             $em->persist($repLog);
             $em->flush();
+            
+            if($request->isXmlHttpRequest()){
+                return $this->render('lift/_repRow.html.twig', [
+                    'repLog' => $repLog
+                ]);
+            }
 
             $this->addFlash('notice', 'Reps crunched!');
 
@@ -38,6 +45,14 @@ class LiftController extends BaseController
         $totalWeight = 0;
         foreach ($repLogs as $repLog) {
             $totalWeight += $repLog->getTotalWeightLifted();
+        }
+
+        if($request->isXmlHttpRequest()){
+            $html = $this->renderView('lift/_form.html.twig', [
+                'form' => $form->createView()
+            ]);
+
+            return new Response($html, 400);
         }
 
         return $this->render('lift/index.html.twig', array(
@@ -55,9 +70,7 @@ class LiftController extends BaseController
      */
     private function getLeaders()
     {
-        $leaderboardDetails = $this->getDoctrine()->getRepository('AppBundle:RepLog')
-            ->getLeaderboardDetails()
-        ;
+        $leaderboardDetails = $this->getDoctrine()->getRepository('AppBundle:RepLog')->getLeaderboardDetails();
 
         $userRepo = $this->getDoctrine()->getRepository('AppBundle:User');
         $leaderboard = array();
