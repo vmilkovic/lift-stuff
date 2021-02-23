@@ -17,12 +17,15 @@
             );
             this.$wrapper.on(
                 'submit',
-                '.js-new-rep-log-form',
+                this._selectors.newRepForm,
                 this.handleNewFormSubmit.bind(this)
             );
     };
 
     $.extend(window.RepLogApp.prototype, {
+        _selectors: {
+            newRepForm: '.js-new-rep-log-form'
+        },
         updateTotalWeightLifted: function(){
             this.$wrapper.find('.js-total-weight').html(this.helper.calculateTotalWeight());
         },
@@ -59,21 +62,64 @@
             e.preventDefault();
             
             var $form = $(e.currentTarget);
-            var $tbody = this.$wrapper.find('tbody');
+            var formData = {};
             var self = this;
+            $.each($form.serializeArray(), function(key, fieldData){
+                formData[fieldData.name] = fieldData.value;
+            });
+
             $.ajax({
-                url: $form.attr('action'),
+                url: $form.data('url'),
                 method: 'POST',
-                data: $form.serialize(),
+                data: JSON.stringify(formData),
                 success: function(data){
-                    $tbody.append(data);
-                    self.updateTotalWeightLifted();
+                    self._clearForm();
+                    self._addRow(data);
                 },
                 error: function(jqXHR){
-                    $form.closest('.js-new-rep-log-form-wrapper')
-                        .html(jqXHR.responseText);
+                    var errorData = JSON.parse(jqXHR.responseText).errors;
+                    self._mapErrorsToForm(errorData);
                 }
             });
+        },
+        _mapErrorsToForm: function(errorData){
+            var $form = this.$wrapper.find(this._selectors.newRepForm);
+            this._removeFormErrors();
+
+            $form.find(':input').each(function(){
+                var fieldName = $(this).attr('name');
+                var $wrapper = $(this).closest('.form-group');
+
+                if(!errorData[fieldName]){
+                    return;
+                }
+       
+                var $error = $('<span class="js-field-error help-block"></span>');
+                $error.html(errorData[fieldName]);
+                $wrapper.append($error);
+                $wrapper.addClass('has-error');
+            });
+        },
+        _removeFormErrors: function(){
+            var $form = this.$wrapper.find(this._selectors.newRepForm);
+            
+            $form.find('.js-field-error').remove();
+            $form.find('.form-group').removeClass('has-error');
+        },
+        _clearForm: function(){
+            this._removeFormErrors();
+
+            var $form = this.$wrapper.find(this._selectors.newRepForm);
+            $form[0].reset();
+        },
+        _addRow: function(repLog){
+            var tplText = $('#js-rep-log-row-template').html();
+            var tpl = _.template(tplText);
+
+            var html = tpl(repLog);
+            this.$wrapper.find('tbody')
+                .append($.parseHTML(html));
+            this.updateTotalWeightLifted();
         }
     });
 
