@@ -1,9 +1,11 @@
 'use strict';
 
-(function(window, $){
+(function(window, $, Routing){
     window.RepLogApp = function($wrapper){
             this.$wrapper = $wrapper;
             this.helper = new Helper($wrapper);
+
+            this.loadRepLogs();
 
             this.$wrapper.on(
                 'click',
@@ -25,6 +27,17 @@
     $.extend(window.RepLogApp.prototype, {
         _selectors: {
             newRepForm: '.js-new-rep-log-form'
+        },
+        loadRepLogs: function(){
+            var self = this;
+            $.ajax({
+                url: Routing.generate('rep_log_list'),
+                success: function(data){
+                    $.each(data.items, function(key, repLog){
+                        self._addRow(repLog);
+                    });
+                }
+            })
         },
         updateTotalWeightLifted: function(){
             this.$wrapper.find('.js-total-weight').html(this.helper.calculateTotalWeight());
@@ -141,4 +154,4 @@
         }
     });
 
-})(window, jQuery);
+})(window, jQuery, Routing);
