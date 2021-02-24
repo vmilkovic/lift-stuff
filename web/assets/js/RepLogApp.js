@@ -1,6 +1,6 @@
 'use strict';
 
-(function(window, $, Routing){
+(function(window, $, Routing, Swal){
     window.RepLogApp = function($wrapper){
             this.$wrapper = $wrapper;
             this.helper = new Helper($wrapper);
@@ -28,24 +28,45 @@
         _selectors: {
             newRepForm: '.js-new-rep-log-form'
         },
+
         loadRepLogs: function(){
             var self = this;
             $.ajax({
                 url: Routing.generate('rep_log_list'),
-                success: function(data){
-                    $.each(data.items, function(key, repLog){
-                        self._addRow(repLog);
-                    });
-                }
-            })
+            }).then(function(data){
+                $.each(data.items, function(key, repLog){
+                    self._addRow(repLog);
+                });
+            });
         },
+
         updateTotalWeightLifted: function(){
             this.$wrapper.find('.js-total-weight').html(this.helper.calculateTotalWeight());
         },
+
         handleRepLogDelete: function(e){
             e.preventDefault();
             
             var $link = $(e.currentTarget);
+            var self = this;
+
+            Swal.fire({
+                title: 'Delete this log?',
+                html: 'What? Did you not actually lift this?',
+                showCancelButton: true,
+                showLoaderOnConfirm: true
+            }).then(
+                function(result){
+                    if(result.isConfirmed){
+                        self._deleteRepLog($link);
+                    } else {
+                        console.log('canceled');
+                    }
+                }
+            );
+        },
+
+        _deleteRepLog: function($link){
             $link.addClass('text-danger');
             $link.find('.fa')
                 .removeClass('fa-trash')
@@ -59,18 +80,18 @@
             $.ajax({
                 url: deleteUrl,
                 method: 'DELETE',
-                success: function(){
-                    $row.fadeOut('normal', function(){
-                        $(this).remove();
-                        self.updateTotalWeightLifted();
-                    });
-
-                }
-            })
+            }).then(function(){
+                $row.fadeOut('normal', function(){
+                    $(this).remove();
+                    self.updateTotalWeightLifted();
+                });
+            });
         },
+
         handleRowClick: function(){
             console.log('row clicked');
         },
+
         handleNewFormSubmit: function(e){
             e.preventDefault();
             
@@ -81,20 +102,35 @@
                 formData[fieldData.name] = fieldData.value;
             });
 
-            $.ajax({
-                url: $form.data('url'),
-                method: 'POST',
-                data: JSON.stringify(formData),
-                success: function(data){
-                    self._clearForm();
-                    self._addRow(data);
-                },
-                error: function(jqXHR){
-                    var errorData = JSON.parse(jqXHR.responseText).errors;
-                    self._mapErrorsToForm(errorData);
-                }
+            
+            this._saveRepLog(formData)
+            .then(function(data){
+                self._clearForm();
+                self._addRow(data);
+            }).catch(function(errorData){
+                self._mapErrorsToForm(errorData);
             });
         },
+
+        _saveRepLog: function(data){
+            return new Promise(function(resolve, reject) { 
+                $.ajax({
+                    url: Routing.generate('rep_log_new'),
+                    method: 'POST',
+                    data: JSON.stringify(data),
+                }).then(function(data, textStatus, jqXHR){
+                    $.ajax({
+                        url: jqXHR.getResponseHeader('Location')
+                    }).then(function(data){
+                        resolve(data);
+                    });
+                }).catch(function(jqXHR){
+                    var errorData = JSON.parse(jqXHR.responseText).errors;
+                    reject(errorData);
+                });
+            });
+        },
+
         _mapErrorsToForm: function(errorData){
             var $form = this.$wrapper.find(this._selectors.newRepForm);
             this._removeFormErrors();
@@ -113,18 +149,21 @@
                 $wrapper.addClass('has-error');
             });
         },
+
         _removeFormErrors: function(){
             var $form = this.$wrapper.find(this._selectors.newRepForm);
             
             $form.find('.js-field-error').remove();
             $form.find('.form-group').removeClass('has-error');
         },
+
         _clearForm: function(){
             this._removeFormErrors();
 
             var $form = this.$wrapper.find(this._selectors.newRepForm);
             $form[0].reset();
         },
+
         _addRow: function(repLog){
             var tplText = $('#js-rep-log-row-template').html();
             var tpl = _.template(tplText);
@@ -154,4 +193,4 @@
         }
     });
 
-})(window, jQuery, Routing);
+})(window, jQuery, Routing, Swal);
