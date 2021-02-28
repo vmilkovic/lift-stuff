@@ -1,0 +1,12 @@
+{
+  "name": "lift-stuff",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/vmilkovic/lift-stuff.git",
+  "author": "Vedran Milković <vedran.milkovic25@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}

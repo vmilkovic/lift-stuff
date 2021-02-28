@@ -2,8 +2,8 @@
 
 ## Symfonycast
 
-- [ ] JavaScript for PHP Geeks
-
+- [x] JavaScript for PHP Geeks
+- [X] JavaScript for PHP Geeks: ES6/ES2015 (New JavaScript)
 ## Setup
 
 **Setup parameters.yml**
