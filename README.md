@@ -4,6 +4,7 @@
 
 - [x] JavaScript for PHP Geeks
 - [X] JavaScript for PHP Geeks: ES6/ES2015 (New JavaScript)
+- [ ] JavaScript for PHP Geeks: Webpack for Module Loading Awesomeness
 ## Setup
 
 **Setup parameters.yml**
@@ -53,3 +54,14 @@ php bin/console server:run
 ```
 
 Now check out the site at `http://localhost:8000`
+
+**Setup node.js and npm/yarn**
+Download [node.js](https://nodejs.org/en/download/) 
+
+Install npm [npm](https://www.npmjs.com/get-npm) or [yarn](https://yarnpkg.com/getting-started/install)
+
+Install packages with 
+
+```
+npm/yarn install
+```
