@@ -2,18 +2,30 @@
 
 namespace AppBundle\Form\Type;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use AppBundle\Entity\RepLog;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
-use FOS\UserBundle\Form\Type\RegistrationFormType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RegistrationType extends RegistrationFormType
+class RepLogType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        parent::buildForm($builder, $options);
-
-        $builder->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
+        $builder
+            ->add('reps', IntegerType::class)
+            ->add('item', ChoiceType::class, array(
+                'choices' => RepLog::getThingsYouCanLiftChoices(),
+                'placeholder' => 'What did you lift?'
+            ))
         ;
     }
-} 
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => RepLog::class
+        ));
+    }
+}

@@ -2,10 +2,10 @@
 
 namespace AppBundle\DataFixtures\ORM;
 
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\User;
 use AppBundle\Entity\RepLog;
-use Doctrine\Persistence\ObjectManager;
-use Doctrine\Common\DataFixtures\FixtureInterface;
 
 class LoadReps implements FixtureInterface
 {

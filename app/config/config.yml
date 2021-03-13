@@ -79,3 +79,7 @@ fos_user:
     registration:
         form:
             type: AppBundle\Form\Type\RegistrationType
+    from_email:
+        address: 'vedran@pumpup.example.com'
+        sender_name: Vedran
+        

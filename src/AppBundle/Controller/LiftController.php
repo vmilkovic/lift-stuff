@@ -4,9 +4,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\RepLog;
 use AppBundle\Form\Type\RepLogType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class LiftController extends BaseController
 {
@@ -46,7 +46,9 @@ class LiftController extends BaseController
      */
     private function getLeaders()
     {
-        $leaderboardDetails = $this->getDoctrine()->getRepository('AppBundle:RepLog')->getLeaderboardDetails();
+        $leaderboardDetails = $this->getDoctrine()->getRepository('AppBundle:RepLog')
+            ->getLeaderboardDetails()
+        ;
 
         $userRepo = $this->getDoctrine()->getRepository('AppBundle:User');
         $leaderboard = array();
