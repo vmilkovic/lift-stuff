@@ -6,7 +6,9 @@
   "author": "Vedran Milković <vedran.milkovic25@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "bootstrap": "3",
+    "jquery": "^3.6.0",
+    "sweetalert2": "^10.15.5",
+    "webpack": "3"
   }
 }

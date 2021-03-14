@@ -59,16 +59,6 @@
 {% block javascripts %}
     {{ parent() }}
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.all.min.js"></script>
-    <script src="{{ asset('assets/dist/RepLogApp.js') }}"></script>
-    <script>
-
-        $(document).ready(function(){
-            var $wrapper = $('.js-rep-log-table');
-
-            var repLogApp = new RepLogApp($wrapper);
-        })
-    
-    </script>
+    <script src="{{ asset('build/rep_log.js') }}"></script>
 
 {% endblock %}
