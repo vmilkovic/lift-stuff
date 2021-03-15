@@ -1,8 +1,9 @@
 'use strict';
 
 const $ = require('jquery')
+require('../css/login.css')
 
-$(document).ready(function() {
+jQuery(() => {
     $('.js-recommended-login').on('click', '.js-show-login', function(e) {
         e.preventDefault();
 
