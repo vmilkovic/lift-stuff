@@ -1,12 +1,40 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyPlugin = require("copy-webpack-plugin");
+
+const styleLoader = {
+    loader: 'style-loader',
+    options: {
+    }
+};
+
+const cssLoader = {
+    loader: 'css-loader',
+    options: {
+        sourceMap: true
+    }
+};
+
+const sassLoader = {
+    loader: 'sass-loader',
+    options: {
+        sourceMap: true
+    }
+};
+
+const resolveUrlLoaderLoader = {
+    loader: 'resolve-url-loader',
+    options: {
+        sourceMap: true
+    }
+};
 
 module.exports = {
     mode: 'development',
     entry: {
-        rep_log: './web/assets/js/rep_log.js',
-        login: './web/assets/js/login.js',
-        layout: './web/assets/js/layout.js'
+        rep_log: './assets/js/rep_log.js',
+        login: './assets/js/login.js',
+        layout: './assets/js/layout.js'
     },
     output: {
         path: path.resolve(__dirname, 'web', 'build'),
@@ -28,8 +56,17 @@ module.exports = {
             {
                 test: /\.css$/i,
                 use: [
-                    'style-loader', 
-                    'css-loader'
+                    styleLoader, 
+                    cssLoader
+                ],
+            },
+            {
+                test: /\.scss$/i,
+                use: [
+                    styleLoader, 
+                    cssLoader,
+                    resolveUrlLoaderLoader,
+                    sassLoader
                 ],
             },
             {
@@ -60,6 +97,13 @@ module.exports = {
         new webpack.ProvidePlugin({
             jQuery: 'jquery',
             $: 'jquery'
-        })
-    ]
+        }),
+
+        new CopyPlugin({
+            patterns: [
+                { from: "./assets/static", to: "static" },
+            ],
+         }),
+    ],
+    devtool: 'inline-soruce-map'
 }
