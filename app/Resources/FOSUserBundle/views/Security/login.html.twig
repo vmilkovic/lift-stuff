@@ -8,6 +8,12 @@
     <script src="{{ asset('build/login.js') }}"></script>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    
+    <link rel="stylesheet" href="{{ asset('build/login.css') }}">
+{% endblock %}
+
 {% block fos_user_content %}
     <div class="container">
         <div class="wrapper">

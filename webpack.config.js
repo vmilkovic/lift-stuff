@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const styleLoader = {
     loader: 'style-loader',
@@ -22,12 +23,15 @@ const sassLoader = {
     }
 };
 
-const resolveUrlLoaderLoader = {
+const resolveUrlLoader = {
     loader: 'resolve-url-loader',
     options: {
         sourceMap: true
     }
 };
+
+const useDevServer = false;
+const publicPath = useDevServer ? 'http://localhost:8080/build/' :'/build/'
 
 module.exports = {
     mode: 'development',
@@ -39,7 +43,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'web', 'build'),
         filename: '[name].js',
-        publicPath: '/build/'
+        publicPath: publicPath
     },
     module: {
         rules: [
@@ -55,19 +59,11 @@ module.exports = {
             },
             {
                 test: /\.css$/i,
-                use: [
-                    styleLoader, 
-                    cssLoader
-                ],
+                use: [MiniCssExtractPlugin.loader, cssLoader]
             },
             {
                 test: /\.scss$/i,
-                use: [
-                    styleLoader, 
-                    cssLoader,
-                    resolveUrlLoaderLoader,
-                    sassLoader
-                ],
+                use: [MiniCssExtractPlugin.loader, cssLoader, resolveUrlLoader, sassLoader],
             },
             {
                  test: /\.(png|svg|jpg|jpeg|ico|gif)$/,
@@ -105,6 +101,19 @@ module.exports = {
                 { from: "./assets/static", to: "static" },
             ],
          }),
+         new MiniCssExtractPlugin({
+            filename: '[name].css'
+         })
     ],
-    devtool: 'inline-soruce-map'
+   /*  optimization: {
+        splitChunks: {
+            chunks: 'all',
+            name: 'layout'
+        }
+    }, */
+    devtool: 'inline-soruce-map',
+    devServer: {
+        contentBase: './web',
+        headers: {'Access-Control-Allow-Origin': '*'}
+    }
 }

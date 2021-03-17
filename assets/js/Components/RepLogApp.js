@@ -23,7 +23,7 @@ class RepLogApp {
 
         this.$wrapper.on(
             'click',
-            '.js-delete-rep-log',
+            '.js-delete-rep-log', 
             this.handleRepLogDelete.bind(this)
         );
         this.$wrapper.on(
