@@ -4,7 +4,7 @@
 
 - [x] JavaScript for PHP Geeks
 - [X] JavaScript for PHP Geeks: ES6/ES2015 (New JavaScript)
-- [ ] JavaScript for PHP Geeks: Webpack for Module Loading Awesomeness
+- [X] JavaScript for PHP Geeks: Webpack for Module Loading Awesomeness
 ## Setup
 
 **Setup parameters.yml**

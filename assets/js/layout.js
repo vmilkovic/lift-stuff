@@ -2,10 +2,9 @@
 
 import $ from 'jquery';
 import 'bootstrap-sass';
-// make sure the polyfill library is loaded in this main entry
-import '@babel/polyfill';
 import '../css/main.scss';
+import 'core-js/es/promise';
 
 jQuery(() => {
     $('[data-toggle="tooltip"]').tooltip();
-});
+}); 
